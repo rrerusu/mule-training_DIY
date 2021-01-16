@@ -54,13 +54,6 @@
             <version>1.2.0</version>
             <classifier>mule-plugin</classifier>
         </dependency>
-		<dependency>
-            <groupId>c5bdec04-c6da-4d82-b5f5-b0b0279c738d</groupId>
-            <artifactId>accounts-api</artifactId>
-            <version>1.0.1</version>
-            <classifier>raml</classifier>
-            <type>zip</type>
-        </dependency>
     	<dependency>
             <groupId>org.mule.modules</groupId>
             <artifactId>mule-apikit-module</artifactId>
@@ -77,6 +70,13 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.20</version>
+        </dependency>
+    	<dependency>
+            <groupId>c5bdec04-c6da-4d82-b5f5-b0b0279c738d</groupId>
+            <artifactId>accounts-api</artifactId>
+            <version>1.0.2</version>
+            <classifier>raml</classifier>
+            <type>zip</type>
         </dependency>
     </dependencies>
 
