@@ -23,7 +23,17 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-payload]]></ee:set-payload>
+payload map ( payload01 , indexOfPayload01 ) -> {
+	id: payload01.accountID,
+	firstName: (payload01.name default "" splitBy " ")[0],
+	lastName: (payload01.name default "" splitBy " ")[1],
+	address: ((payload01.street default "") ++ ", " ++ (payload01.city default "")),
+	postal: payload01.postal default "",
+	country: payload01.country default "",
+	creationDate: payload01.creationDate as String default "",
+	accountType: payload01.accountType default "",
+	miles: payload01.miles default 0
+}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="70bd5493-bae8-4302-a88d-b8452658357f" message="#[payload]"/>
