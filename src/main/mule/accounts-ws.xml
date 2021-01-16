@@ -12,7 +12,11 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<flow name="getAccounts" doc:id="8856bdb7-14f2-4164-8eba-f5656cd36fa2" >
 		<http:listener doc:name="GET /accounts" doc:id="cdc69233-ac07-47ed-80cf-ed615a9a98e2" config-ref="accounts-api-httpListenerConfig" path="/accounts" allowedMethods="GET"/>
 		<db:select doc:name="Fetch Accounts" doc:id="92738529-65a6-4521-a8c1-4328cfc7e742" config-ref="MySQL_Database_Config">
-			<db:sql ><![CDATA[SELECT * FROM flights_customers]]></db:sql>
+			<db:sql ><![CDATA[SELECT * FROM flights_customers
+	WHERE accountType = :type]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"type": attributes.queryParams.'type'
+}]]]></db:input-parameters>
 		</db:select>
 		<ee:transform doc:name="Java to JSON" doc:id="c7661bec-b1e4-4ea8-b5b3-95607136a04c" >
 			<ee:message >
