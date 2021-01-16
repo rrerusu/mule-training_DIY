@@ -38,4 +38,34 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="70bd5493-bae8-4302-a88d-b8452658357f" message="#[payload]"/>
 	</flow>
+	<flow name="getAccountByID" doc:id="5817ae92-9436-443f-9150-ce08d58de8e7" >
+		<http:listener doc:name="GET /accounts/{id}" doc:id="fb16afdc-8789-452a-bd0f-0536d76a167a" config-ref="accounts-api-httpListenerConfig" path="/accounts/{id}" allowedMethods="GET" />
+		<db:select doc:name="Fetch Account" doc:id="f99a0212-bc0e-44d7-856c-5bb489f56586" config-ref="MySQL_Database_Config" >
+			<db:sql ><![CDATA[SELECT * FROM flights_customers
+	WHERE accountid = :ID;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"type": attributes.queryParams.'type' default "",
+	"ID": attributes.uriParams.'id'
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Java to JSON" doc:id="9e03b0e6-55a6-46ba-b374-5bc604d99d65" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	id: payload01.accountID,
+	firstName: (payload01.name default "" splitBy " ")[0],
+	lastName: (payload01.name default "" splitBy " ")[1],
+	address: ((payload01.street default "") ++ ", " ++ (payload01.city default "")),
+	postal: payload01.postal default "",
+	country: payload01.country default "",
+	creationDate: payload01.creationDate as String default "",
+	accountType: payload01.accountType default "",
+	miles: payload01.miles default 0
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="897ca136-9a7a-4e70-a941-2335816ba6de" message="#[payload]" />
+	</flow>
 </mule>
