@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<db:config name="MySQL_Database_Config" doc:name="Database Config" doc:id="eb74ccb6-67a0-408d-be0b-23184b23d835" >
+		<db:my-sql-connection host="iltdb.learn.mulesoft.com" port="3306" user="mule" password="mule" database="training" />
+	</db:config>
+	<flow name="getAccounts" doc:id="8856bdb7-14f2-4164-8eba-f5656cd36fa2" >
+		<http:listener doc:name="GET /accounts" doc:id="cdc69233-ac07-47ed-80cf-ed615a9a98e2" config-ref="accounts-api-httpListenerConfig" path="/accounts" allowedMethods="GET"/>
+		<db:select doc:name="Fetch Accounts" doc:id="92738529-65a6-4521-a8c1-4328cfc7e742" config-ref="MySQL_Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM flights_customers]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Java to JSON" doc:id="c7661bec-b1e4-4ea8-b5b3-95607136a04c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="70bd5493-bae8-4302-a88d-b8452658357f" message="#[payload]"/>
+	</flow>
+</mule>
